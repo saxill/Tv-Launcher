@@ -237,6 +237,7 @@ public class HomeView extends FrameLayout {
         try { getContext().registerReceiver(pkgReceiver, f); } catch (Exception ignored) { }
         handler.post(tick);
         handler.postDelayed(rotate, ROTATE_MS);
+        resetIdle();
     }
 
     @Override protected void onDetachedFromWindow() {
@@ -247,6 +248,8 @@ public class HomeView extends FrameLayout {
     }
 
     @Override public boolean dispatchKeyEvent(KeyEvent e) {
+        if (saverOn) { if (e.getAction() == KeyEvent.ACTION_UP) hideSaver(); return true; }
+        resetIdle();
         if (e.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             if (e.getAction() == KeyEvent.ACTION_UP) { if (menu != null && menu.getParent() != null) hideMenu(); else toTop(); }
             return true; // stay home; never fall through to whatever is behind
@@ -814,6 +817,49 @@ public class HomeView extends FrameLayout {
     private class CastButton extends GlassIcon {
         CastButton(Context c) { super(c); setContentDescription("Screen mirroring"); }
         @Override String label() { return "Mirroring"; }
+    }
+
+    // ================= in-launcher clock screensaver =================
+    // Fire OS runs Amazon's own screensaver and ignores ours, so after a short idle on the home
+    // screen the launcher shows the big depth clock itself. Any key brings the home screen back.
+    private static final long IDLE_MS = 90_000;
+    private HeroView saver;
+    private boolean saverOn;
+    private final Runnable idleRun = new Runnable() { public void run() { showSaver(); } };
+    private final Runnable saverTick = new Runnable() {
+        public void run() {
+            if (!saverOn || saver == null) return;
+            Date now = new Date();
+            saver.setTexts(timeFmt.format(now), dateFmt.format(now));
+            long m = now.getTime() / 60000; // slow drift so the glyphs never burn in
+            saver.setOffset((float) Math.sin(m / 7.0) * px(60), (float) Math.cos(m / 5.0) * px(40));
+            handler.postDelayed(this, 15_000);
+        }
+    };
+
+    private void resetIdle() {
+        handler.removeCallbacks(idleRun);
+        if (attached && !saverOn) handler.postDelayed(idleRun, IDLE_MS);
+    }
+
+    private void showSaver() {
+        if (saverOn || wallBitmap == null) return;
+        saver = new HeroView(getContext());
+        saver.setDrawBase(true);
+        saver.setBackgroundColor(0xFF000000);
+        saver.setWall(wallBitmap, sceneFg);
+        addView(saver, new LayoutParams(-1, -1));
+        saver.setAlpha(0f);
+        saver.animate().alpha(1f).setDuration(700).start();
+        saverOn = true;
+        saverTick.run();
+    }
+
+    private void hideSaver() {
+        saverOn = false;
+        handler.removeCallbacks(saverTick);
+        if (saver != null) { removeView(saver); saver = null; }
+        resetIdle();
     }
 
     // ================= top-right "..." menu =================

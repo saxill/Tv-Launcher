@@ -22,8 +22,10 @@ let you replace Amazon's launcher.
   watching, so these open the app, not the episode.
 - **"..." menu** (top right) with **Settings**, **Wi-Fi** (shows connection state) and **Mirroring**.
   Mirroring opens Fire TV's own mirroring screen, the same one as long-press Home, then Mirroring.
-- **Clock screensaver** (Daydream) with the same clock over the wallpaper, drifting slowly to avoid
-  burn-in.
+- **Idle clock screen.** After 90 seconds without input on the home screen, the launcher fades to the
+  scene with the big clock and date, drifting slowly to avoid burn-in. Any button brings the home
+  screen back. (Fire OS runs Amazon's own screensaver and ignores third-party ones, so this is built
+  into the launcher. A standard Daydream, `ClockDream`, is also included for devices that honour it.)
 - **Clean app list.** System apps are hidden except a short allow-list, and you can hide any app by
   package name.
 - **Overscan-safe layout** and D-pad-first focus handling.
