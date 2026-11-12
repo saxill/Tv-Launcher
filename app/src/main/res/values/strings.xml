@@ -1,0 +1,3 @@
+<resources>
+    <string name="redirect_desc">Opens this home screen when the Home button is pressed. Only watches the Amazon launcher; reads no screen content or key presses.</string>
+</resources>
