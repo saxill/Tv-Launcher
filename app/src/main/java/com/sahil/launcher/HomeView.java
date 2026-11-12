@@ -213,7 +213,6 @@ public class HomeView extends FrameLayout {
         top.addView(credit, cp);
         clock.setVisibility(View.GONE);
         updateHero();
-        fetchWeather();
         dotsBtn = new DotsButton(getContext());
         dotsBtn.setOnClickListener(new OnClickListener() {
             public void onClick(View v) { if (menu != null && menu.getParent() != null) hideMenu(); else showMenu(); }
