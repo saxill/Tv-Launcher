@@ -122,6 +122,11 @@ is drawn in front of the picture.
 - The package name is `com.sahil.launcher`.
 - Debug builds only; the APK is signed with the default debug key.
 
+## License
+
+MIT, see [LICENSE](LICENSE). The bundled scenes and font have their own terms, listed in
+[NOTICE.md](NOTICE.md).
+
 ## Credits
 
 - Scene images and foreground cut-outs from [couch-tv](https://github.com/Seagey/couch-tv) by Seagey
